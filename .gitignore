@@ -4,8 +4,8 @@ logs
 npm-debug.log*
 
 # dependencies
-/*/node_modules
-/*/.pnp
+*/node_modules
+*/.pnp
 .pnp.js
 
 # Optional npm cache directory
