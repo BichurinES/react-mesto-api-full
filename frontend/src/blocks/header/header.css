@@ -1,0 +1,29 @@
+.header {
+  display: grid;
+  align-items: end;
+  grid-template-areas: 
+  'container container'
+  'logo menu';
+  box-sizing: border-box;
+  padding-bottom: 31.6px;
+  max-width: 880px;
+  min-height: 56px;
+  border-bottom: 1px solid rgba(84, 84, 84, .7);
+}
+
+@media screen and (min-width: 425px) {
+  .header {
+    display: flex;
+    align-items: flex-end;
+    padding-top: 28px;
+    padding-left: 27px;
+  }
+}
+
+@media screen and (min-width: 934px) {
+  .header {
+    padding-top: 45px;
+    padding-left: 0;
+    padding-bottom: 41px;
+  }
+}

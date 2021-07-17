@@ -1,0 +1,25 @@
+.popup__form-field {
+  display: block;
+  width: 100%;
+  padding-bottom: 8px;
+  margin-top: 20px;
+  border: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, .2);
+  font-family: inherit;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 15px;
+  color: #000;
+}
+
+@media screen and (min-width: 768px) {
+  .popup__form-field {
+    margin-top: 30px;
+    font-size: 14px;
+    line-height: 17px;
+  }
+}
+
+.popup__form-field:first-child {
+  margin-top: 0;
+}

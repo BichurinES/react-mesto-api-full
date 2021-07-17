@@ -1,0 +1,24 @@
+.header__link {
+  grid-area: menu;
+  margin: 0;
+  margin-right: 30px;
+  color: #fff;
+  text-decoration: none;
+  text-align: end;
+  transition: opacity .5s ease;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+@media screen and (min-width: 934px) {
+  .header__link {
+    font-size: 18px;
+    line-height: 22px;
+    margin-right: 0;
+  }
+} 
+
+.header__link:hover {
+  opacity: .6;
+}
