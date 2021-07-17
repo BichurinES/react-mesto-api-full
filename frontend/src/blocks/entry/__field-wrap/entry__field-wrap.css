@@ -1,0 +1,11 @@
+.entry__field-wrap {
+  border: none;
+  padding: 0;
+  margin: 40px 0 0;
+}
+
+@media screen and (min-width: 934px) {
+  .entry__field-wrap {
+    margin-top: 50px;
+  }
+}

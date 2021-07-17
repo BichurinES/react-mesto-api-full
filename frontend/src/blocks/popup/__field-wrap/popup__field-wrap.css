@@ -1,0 +1,11 @@
+.popup__field-wrap {
+  border: none;
+  padding: 0;
+  margin: 30px 0 0;
+}
+
+@media screen and (min-width: 768px) {
+  .popup__field-wrap {
+    margin-top: 48px;
+  }
+}

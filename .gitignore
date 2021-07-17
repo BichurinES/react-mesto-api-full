@@ -5,17 +5,17 @@ npm-debug.log*
 
 # dependencies
 */node_modules
-*/.pnp
+.pnp
 .pnp.js
 
 # Optional npm cache directory
 .npm
 
 # testing
-/*/coverage
+*/coverage
 
 # production
-/*/build
+*/build
 
 # misc
 .DS_Store

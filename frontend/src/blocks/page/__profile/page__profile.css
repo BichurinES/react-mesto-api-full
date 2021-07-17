@@ -1,0 +1,12 @@
+.page__profile {
+  margin: 0 auto;
+  margin-top: 42px;
+  margin-bottom: 36px;
+}
+
+@media screen and (min-width: 768px) {
+  .page__profile {
+    margin-top: 40px;
+    margin-bottom: 50px;
+  }
+}

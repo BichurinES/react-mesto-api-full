@@ -1,0 +1,11 @@
+.popup__submit-button_type_disabled {
+  background-color: #fff;
+  color: #000;
+  opacity: .2;
+  border: 1px solid #000;
+  box-sizing: border-box;
+}
+
+.popup__submit-button_type_disabled:hover {
+  background-color: inherit;
+}

@@ -1,0 +1,30 @@
+.header__logout-button {
+  padding: 0;
+  outline: none;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: opacity .5s ease;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 22px;
+  color: #a9a9a9;
+}
+
+@media screen and (min-width: 425px) {
+  .header__logout-button {
+    font-size: 14px;
+    line-height: 17px;
+  }
+}
+
+@media screen and (min-width: 934px) {
+  .header__logout-button {
+    font-size: 18px;
+    line-height: 22px;
+  }
+}
+
+.header__logout-button:hover {
+  opacity: .6;
+}

@@ -1,0 +1,11 @@
+.popup__close-button_type_fullscreen-image {
+  right: 10px;
+  top: -30px;
+}
+
+@media screen and (min-width: 768px) {
+  .popup__close-button_type_fullscreen-image {
+    right: -40px;
+    top: -40px;
+  }
+}
