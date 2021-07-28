@@ -1,6 +1,8 @@
 import { useHistory } from 'react-router-dom';
 import EntryForm from './EntryForm';
 import * as auth from './Auth';
+import api from '../utils/api';
+import React from 'react';
 
 function Login(props) {
   const history = useHistory();
@@ -8,16 +10,15 @@ function Login(props) {
   function handleSubmit({email, password}) {
     auth.login({email, password})
       .then((res) => {
-        if (res.error) {
-          props.handleUpdateInfoTooltip({title: res.error, isSuccess: false});
+        if (res.message) {
+          props.handleUpdateInfoTooltip({title: res.message, isSuccess: false});
           props.handleInfoTooltipShow();
         } else {
-          localStorage.setItem('token', res.token);
-          auth.checkToken(res.token)
-            .then((res) => {
-              if (res.data) {
-                props.handleUpdateEmail(res.data.email);
-                props.handleLogged();
+          api.getProfile()
+            .then((user) => {
+              if (user.name) {
+                props.handleUpdateEmail(email);
+                props.handleLogged(user);
                 history.push('/');
               } else {
                 props.handleUpdateInfoTooltip({title: 'Что-то пошло не так! Попробуйте ещё раз.', isSuccess: false});

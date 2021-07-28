@@ -1,3 +1,5 @@
+import { BASE_URL } from './constants';
+
 class Api {
   constructor({baseUrl, headers}) {
     this._baseUrl = baseUrl;
@@ -7,7 +9,7 @@ class Api {
   }
 
   _createRequest({url, headersObj, method, body}) {
-    return fetch(url, {method: method, headers: headersObj, body: body})
+    return fetch(url, {method: method, headers: headersObj, body: body, credentials: 'include'})
       .then((res) => {
         if (res.ok) {
           return res.json();
@@ -68,7 +70,7 @@ class Api {
 
   changeLikeCardStatus(idCard, like) {
     return this._createRequest({
-      url: `${this._cardsUrl}/likes/${idCard}`,
+      url: `${this._cardsUrl}/${idCard}/likes`,
       headersObj: this._headers,
       method: like ? 'PUT' : 'DELETE'
     })
@@ -76,9 +78,8 @@ class Api {
 }
 
 const apiOptions = {
-  baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-20',
+  baseUrl: BASE_URL,
   headers: {
-    authorization: '73878bf0-187e-4ea2-beea-67c91647b84f',
     'Content-Type': 'application/json'
   }
 };

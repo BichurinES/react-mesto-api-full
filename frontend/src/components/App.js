@@ -1,11 +1,6 @@
-/* 
-Прошу прощения за очень неструктуированный и повторяющийся код. 
-Делал работу в спешке, не успел провести нормальный рефакторинг.
-Заранее спасибо за проверку!
-*/
-
 import React from 'react';
 import { Switch, Route, Link, useHistory } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import Header from './Header';
 import Main from './Main';
 import Login from './Login';
@@ -19,7 +14,6 @@ import ImagePopup from './ImagePopup';
 import InfoTooltip from './InfoTooltip';
 import ProtectedRoute from './ProtectedRoute';
 import api from '../utils/api';
-import * as auth from './Auth';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function App() {
@@ -37,45 +31,43 @@ function App() {
   const [cards, setCards] = React.useState([]);
   const [infoTooltipContent, setInfoTooltipContent] = React.useState({});
   const [selectedCard, setSelectedCard] = React.useState({});
-  const [cardToDelete, setCardToDelete] = React.useState({});  
+  const [cardToDelete, setCardToDelete] = React.useState({});
   
   React.useEffect(() => {
-    api.getProfile()
-      .then((data) => {
-        setCurrentUser(data);
-      })
-      .catch((err) => console.log(err));
-    
-    if(localStorage.getItem('token')) {
-      auth.checkToken(localStorage.getItem('token'))
-        .then((res) => {
-          if (res.data) {
-            handleUpdateEmail(res.data.email);
-            handleLogged();
+    if (Cookies.get('isLogged') === 'true') {
+      api.getProfile()
+        .then((data) => {
+          if (!data.err) {
+            handleUpdateEmail(data.email);
+            handleLogged(data);
             history.push('/');
           }
-        });
+        })
+        .catch((err) => console.log(err));
     }
-    
   }, []);
 
   React.useEffect(() => {
-    api.getInitialCards()
-      .then((data) => {
-        setCards(data);
-      })
-      .catch((err) => console.log(err));
-  }, []);
-  
+    console.log(Cookies.get('isLogged'));
+    if (Cookies.get('isLogged') === 'true') {
+      api.getInitialCards()
+        .then((data) => {
+          if (!data.err) {
+            setCards(data);
+          }
+        })
+        .catch((err) => console.log(err.message));
+    }
+  }, [currentUser]);
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    const isLiked = card.likes.some(i => i === currentUser._id);
     
     api.changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
           setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err.message));
   }
   
   function handleCardDelete(card) {
@@ -85,7 +77,7 @@ function App() {
         setCards((state) => state.filter((c) => c._id !== card._id));
         closeAllPopups();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err.message));
   }
   
   function handleUpdateUser(userData) {
@@ -95,7 +87,7 @@ function App() {
         setCurrentUser(newData);
         closeAllPopups();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err.message));
   }
 
   function handleUpdateAvatar(avatarData, onSuccess) {
@@ -106,7 +98,7 @@ function App() {
         onSuccess();
         closeAllPopups();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err.message));
   }
 
   function handleUpdateEmail(email) {
@@ -121,18 +113,22 @@ function App() {
         onSuccess();
         closeAllPopups();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err.message));
   }
 
   function handleUpdateInfoTooltip(data) {
     setInfoTooltipContent(data);
   }
 
-  function handleLogged() {
+  function handleLogged(user) {
+    Cookies.set('isLogged', true);
+    setCurrentUser(user);
     setIsLogged(true);
   }
 
   function handleLogout() {
+    Cookies.set('isLogged', false);
+    setCurrentUser({});
     setIsLogged(false);
   }
 
