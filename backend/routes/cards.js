@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-const { joiUrlPattern } = require('../constants/regex-pattern');
+const { urlPattern } = require('../constants/regex-pattern');
 const { headersOpt, cardParamsOpt } = require('../constants/celebrateTemplates');
 const {
   getCards,
@@ -16,7 +16,7 @@ router.get('/', celebrate({
 router.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().regex(joiUrlPattern),
+    link: Joi.string().required().regex(urlPattern),
   }),
   headers: headersOpt().data,
 }), createCard);

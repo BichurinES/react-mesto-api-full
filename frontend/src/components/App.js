@@ -26,7 +26,7 @@ function App() {
   const [isConfirmDeletePopupOpen, setIsConfirmDeletePopupOpen] = React.useState(false);
   const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [isLogged, setIsLogged] = React.useState(false);
+  const [isLogged, setIsLogged] = React.useState(Cookies.get('isLogged') === 'true');
   const [isOpenMenu, setIsOpenMenu] = React.useState(false);
   const [cards, setCards] = React.useState([]);
   const [infoTooltipContent, setInfoTooltipContent] = React.useState({});
@@ -36,19 +36,24 @@ function App() {
   React.useEffect(() => {
     if (Cookies.get('isLogged') === 'true') {
       api.getProfile()
-        .then((data) => {
-          if (!data.err) {
-            handleUpdateEmail(data.email);
-            handleLogged(data);
+        .then((user) => {
+          if (user.name) {
+            handleUpdateEmail(user.email);
+            handleCurrentUser(user);
             history.push('/');
+          } else {
+            handleUpdateInfoTooltip({title: 'Что-то пошло не так! Попробуйте ещё раз.', isSuccess: false});
+            handleInfoTooltipShow();
           }
         })
-        .catch((err) => console.log(err));
+        .catch(() => {
+          handleUpdateInfoTooltip({title: 'Что-то пошло не так! Попробуйте ещё раз.', isSuccess: false});
+          handleInfoTooltipShow();
+        })
     }
-  }, []);
+  }, [isLogged]);
 
   React.useEffect(() => {
-    console.log(Cookies.get('isLogged'));
     if (Cookies.get('isLogged') === 'true') {
       api.getInitialCards()
         .then((data) => {
@@ -58,11 +63,10 @@ function App() {
         })
         .catch((err) => console.log(err.message));
     }
-  }, [currentUser]);
+  }, [isLogged]);
 
   function handleCardLike(card) {
     const isLiked = card.likes.some(i => i === currentUser._id);
-    
     api.changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
           setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
@@ -120,23 +124,20 @@ function App() {
     setInfoTooltipContent(data);
   }
 
-  function handleLogged(user) {
-    Cookies.set('isLogged', true);
-    setCurrentUser(user);
+  function handleLogged() {
     setIsLogged(true);
+    Cookies.set('isLogged', true, { expires: 7 });
   }
 
   function handleLogout() {
-    Cookies.set('isLogged', false);
-    setCurrentUser({});
+    setEmail('');
     setIsLogged(false);
+    Cookies.set('isLogged', false, { expires: 7 });
+    history.push('/sign-in');
   }
 
-  function handleDeleteToken() {
-    localStorage.removeItem('token');
-    setEmail('');
-    handleLogout();
-    history.push('/sign-in');
+  function handleCurrentUser(user = {}) {
+    setCurrentUser(user);
   }
 
   const handleEscDown = React.useCallback((evt) => {
@@ -202,21 +203,21 @@ function App() {
             <Header>
               <Link className="header__link" to="/sign-up">Регистрация</Link>
             </Header>
-            <Login handleInfoTooltipShow={handleInfoTooltipShow} handleUpdateInfoTooltip={handleUpdateInfoTooltip} handleUpdateEmail={handleUpdateEmail} handleLogged={handleLogged} />
+            <Login handleInfoTooltipShow={handleInfoTooltipShow} handleUpdateInfoTooltip={handleUpdateInfoTooltip} handleLogged={handleLogged} />
           </Route>
           <Route path="/sign-up">
             <Header>
               <Link className="header__link" to="/sign-in">Войти</Link>
             </Header>
-            <Register handleInfoTooltipShow={handleInfoTooltipShow} handleUpdateInfoTooltip={handleUpdateInfoTooltip} handleUpdateEmail={handleUpdateEmail} handleLogged={handleLogged} />
+            <Register handleInfoTooltipShow={handleInfoTooltipShow} handleUpdateInfoTooltip={handleUpdateInfoTooltip} handleLogged={handleLogged} />
           </Route>
           <ProtectedRoute path="/" isLogged={isLogged}>
             <Header>
               <div className={`header__container ${isOpenMenu ? 'header__container_active' : ''}`}>
                 <p className="header__login">{email}</p>
-                <button className="header__logout-button" onClick={handleDeleteToken}>Выйти</button>
+                <button className="header__logout-button" onClick={handleLogout}>Выйти</button>
               </div>
-              <button className={`header__menu-button ${isOpenMenu ? 'header__menu-button_active' : ''} `}onClick={handleClickMenu}></button>
+              <button className={`header__menu-button ${isOpenMenu ? 'header__menu-button_active' : ''} `} onClick={handleClickMenu}></button>
             </Header>
             <Main
               cards={cards}

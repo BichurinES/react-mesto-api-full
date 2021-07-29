@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { defaultUrlPattern } = require('../constants/regex-pattern');
+const { urlPattern } = require('../constants/regex-pattern');
 
 const cardSchema = mongoose.Schema({
   name: {
@@ -13,7 +13,7 @@ const cardSchema = mongoose.Schema({
     required: true,
     validate: {
       validator(link) {
-        return defaultUrlPattern.test(link);
+        return urlPattern.test(link);
       },
       message: 'Неверный формат URL',
     },

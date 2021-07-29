@@ -8,7 +8,8 @@ function PopupWithForm(props) {
           {props.children}
           <input 
             type="submit" 
-            className={`popup__submit-button popup__submit-button_type_${props.name}`} 
+            className={`popup__submit-button popup__submit-button_type_${props.name} ${props.isFormValid ? '' : 'popup__submit-button_type_disabled'}`}
+            disabled={props.isFormValid ? false : true}
             value={props.isLoading ? 'Сохранение...' : props.buttonText} />
         </form>
         <button 

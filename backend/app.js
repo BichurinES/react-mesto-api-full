@@ -8,11 +8,10 @@ const { celebrate, Joi, errors } = require('celebrate');
 const { corsHandler } = require('./middlewares/cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { login, createUser } = require('./controllers/users');
-const { joiUrlPattern } = require('./constants/regex-pattern');
+const { urlPattern } = require('./constants/regex-pattern');
 const auth = require('./middlewares/auth');
 
 const app = express();
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -21,7 +20,7 @@ app.use(requestLogger);
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    password: Joi.string().required(),
   }),
 }), login);
 app.post('/signup', celebrate({
@@ -30,7 +29,7 @@ app.post('/signup', celebrate({
     password: Joi.string().required().min(8),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().regex(joiUrlPattern),
+    avatar: Joi.string().regex(urlPattern),
   }),
 }), createUser);
 app.use('/cards', auth, require('./routes/cards'));

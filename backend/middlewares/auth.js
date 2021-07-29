@@ -5,9 +5,8 @@ const NotValidCredentials = require('../errors/not-valid-credentials-err');
 
 module.exports = (req, res, next) => {
   const token = req.cookies.jwt;
-
   if (!token) {
-    next(new NotAccessError('Необходима авторизация'));
+    throw new NotAccessError('Необходима авторизация');
   }
 
   let payload = '';
@@ -15,7 +14,7 @@ module.exports = (req, res, next) => {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    next(new NotValidCredentials('Переданный токен некорректен'));
+    throw new NotValidCredentials('Переданный токен некорректен');
   }
 
   req.user = payload;

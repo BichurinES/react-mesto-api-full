@@ -9,6 +9,9 @@ export function register({password, email}) {
     body: JSON.stringify({password, email}),
     credentials: 'include',
   })
+    .then((res) => {
+      return res.json();
+    })
 }
 
 export function login({password, email}) {
@@ -20,4 +23,11 @@ export function login({password, email}) {
     body: JSON.stringify({password, email}),
     credentials: 'include',
   })
+    .then((res) => {
+      if (!res.ok) {
+        return res.json();
+      }
+
+      return res;
+    })
 }

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-const { defaultUrlPattern } = require('../constants/regex-pattern');
+const { urlPattern } = require('../constants/regex-pattern');
 
 const userSchema = mongoose.Schema({
   email: {
@@ -38,7 +38,7 @@ const userSchema = mongoose.Schema({
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator(link) {
-        return defaultUrlPattern.test(link);
+        return urlPattern.test(link);
       },
       message: 'Неверный формат URL',
     },
