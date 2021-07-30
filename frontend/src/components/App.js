@@ -57,7 +57,7 @@ function App() {
     if (Cookies.get('isLogged') === 'true') {
       api.getInitialCards()
         .then((data) => {
-          if (!data.err) {
+          if (!data.err && !data.message) {
             setCards(data);
           }
         })
@@ -68,8 +68,13 @@ function App() {
   function handleCardLike(card) {
     const isLiked = card.likes.some(i => i === currentUser._id);
     api.changeLikeCardStatus(card._id, !isLiked)
-      .then((newCard) => {
-          setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+      .then((res) => {
+        if (res.message) {
+          handleUpdateInfoTooltip({title: res.message, isSuccess: false});
+          handleInfoTooltipShow();
+        } else {
+          setCards((state) => state.map((c) => c._id === card._id ? res : c));
+        }
       })
       .catch((err) => console.log(err.message));
   }
@@ -77,19 +82,29 @@ function App() {
   function handleCardDelete(card) {
     setIsLoading(true);
     api.deleteCard(card._id)
-      .then(() => {
-        setCards((state) => state.filter((c) => c._id !== card._id));
-        closeAllPopups();
+      .then((res) => {
+        if (res.message) {
+          handleUpdateInfoTooltip({title: res.message, isSuccess: false});
+          handleInfoTooltipShow();
+        } else {
+          setCards((state) => state.filter((c) => c._id !== card._id));
+          closeAllPopups();
+        }
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => console.log(err));
   }
   
   function handleUpdateUser(userData) {
     setIsLoading(true);
     api.chahgeProfile(userData)
-      .then((newData) => {
-        setCurrentUser(newData);
-        closeAllPopups();
+      .then((res) => {
+        if (res.message) {
+          handleUpdateInfoTooltip({title: res.message, isSuccess: false});
+          handleInfoTooltipShow();
+        } else {
+          setCurrentUser(res);
+          closeAllPopups();
+        }
       })
       .catch((err) => console.log(err.message));
   }
@@ -97,10 +112,15 @@ function App() {
   function handleUpdateAvatar(avatarData, onSuccess) {
     setIsLoading(true);
     api.changeAvatar(avatarData)
-      .then((newData) => {
-        setCurrentUser(newData);
-        onSuccess();
-        closeAllPopups();
+      .then((res) => {
+        if (res.message) {
+          handleUpdateInfoTooltip({title: res.message, isSuccess: false});
+          handleInfoTooltipShow();
+        } else {
+          setCurrentUser(res);
+          onSuccess();
+          closeAllPopups();
+        }
       })
       .catch((err) => console.log(err.message));
   }
@@ -112,10 +132,15 @@ function App() {
   function handleAddPlaceSubmit(cardData, onSuccess) {
     setIsLoading(true);
     api.addNewCard(cardData)
-      .then((card) => {
-        setCards([card, ...cards]);
-        onSuccess();
-        closeAllPopups();
+      .then((res) => {
+        if (res.message) {
+          handleUpdateInfoTooltip({title: res.message, isSuccess: false});
+          handleInfoTooltipShow();
+        } else {
+          setCards([res, ...cards]);
+          onSuccess();
+          closeAllPopups();
+        }
       })
       .catch((err) => console.log(err.message));
   }

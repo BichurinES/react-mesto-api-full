@@ -11,11 +11,7 @@ class Api {
   _createRequest({url, headersObj, method, body}) {
     return fetch(url, {method: method, headers: headersObj, body: body, credentials: 'include'})
       .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-
-        return Promise.reject(`Ошибка: ${res.status}`);
+        return res.json();
       })
   }
 

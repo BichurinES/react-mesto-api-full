@@ -24,10 +24,6 @@ export function login({password, email}) {
     credentials: 'include',
   })
     .then((res) => {
-      if (!res.ok) {
-        return res.json();
-      }
-
-      return res;
+      return res.json();
     })
 }

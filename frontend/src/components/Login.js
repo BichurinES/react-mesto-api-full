@@ -1,12 +1,13 @@
 import EntryForm from './EntryForm';
 import * as auth from './Auth';
 import React from 'react';
+import { SUCCESS_MSG } from '../utils/constants';
 
 function Login(props) {
   function handleSubmit({email, password}) {
     auth.login({email, password})
       .then((res) => {
-        if (res.message) {
+        if (res.message !== SUCCESS_MSG) {
           props.handleUpdateInfoTooltip({title: res.message, isSuccess: false});
           props.handleInfoTooltipShow();
         } else {

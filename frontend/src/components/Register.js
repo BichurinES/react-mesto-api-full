@@ -1,6 +1,7 @@
 import EntryForm from './EntryForm';
 import * as auth from './Auth';
 import { Link } from 'react-router-dom';
+import { SUCCESS_MSG } from '../utils/constants';
 
 function Register(props) {
   function handleSubmit({email, password}) {
@@ -14,7 +15,7 @@ function Register(props) {
           props.handleInfoTooltipShow();
           return auth.login({email, password})
             .then((res) => {
-              if (res.message) {
+              if (res.message !== SUCCESS_MSG) {
                 props.handleUpdateInfoTooltip({title: res.message, isSuccess: false});
                 props.handleInfoTooltipShow();
               } else {
@@ -26,7 +27,8 @@ function Register(props) {
             })
         }
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log(e);
         props.handleUpdateInfoTooltip({title: 'Что-то пошло не так! Попробуйте ещё раз.', isSuccess: false});
         props.handleInfoTooltipShow();
       })
